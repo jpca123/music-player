@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="rgb(17, 200, 213)">
+    <title>Reproductor de Musica</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;1,100;1,300&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+
+    <!-- mi hoja de estilos -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <header>
+      <h1>Mini reproductor</h1>
+    </header>
+
+    <main>
+      <section class="container">
+        <article class="player">
+
+          <section class="player-options">
+            <button id="add" class="player-button small-button">
+              <span class="player-icon material-icons material-icons-outlined">
+                library_music
+              </span>
+            </button>
+            <p class="player-song-title">Player Music</p>
+            <button class="player-button small-button" id="list">
+              <span class="player-icon material-icons material-icons-outlined"> list </span>
+            </button>
+          </section>
+
+          <section class="song-info">
+            <img src="assets/music-image.jpg" class="song-img" />
+            <h2 class="song-name" title="para seleccionar click en el icono de la parte superior izquierda">Selecciona una canción</h2>
+          </section>
+          <section class="controls">
+
+            <section class="controls-time-container">
+              <time class="controls-time">--:--</time>
+              <time class="controls-time">--:--</time>
+            </section>
+
+            <input
+              type="range"
+              min="0"
+              max="120"
+              value="0"
+              class="controls-duration"
+            />
+
+          </section>
+              <section class="controls-container">
+                <button class="player-button" id="previous">
+                  <span class="player-icon material-icons"> skip_previous </span>
+                </button>
+                <button class="player-button" id="skip_back">
+                  <span class="player-icon material-icons"> fast_rewind </span></button
+                >
+                <button class="player-button play-button" id="play">
+                  <span id="icon-play" class="player-icon material-icons"> play_arrow </span>
+                  <span id="icon-pause" class="player-icon material-icons hide"> pause </span></button
+                >
+                <button class="player-button" id="skip_forward">
+                  <span class="player-icon material-icons"> fast_forward </span>
+                </button>
+  
+                <button class="player-button" id="next">
+                  <span class="player-icon material-icons"> skip_next </span>
+                </button>
+              </section>
+
+          <section class="volume">
+            <span class="player-icon material-icons volume-icon"> volume_up </span>
+            <input type="range" class="volume-input" value="20" min="0" max="20">
+          </section>
+
+        </article>
+
+
+        <section class="list">
+          <section class="list-exit-container">
+            <h3>Lista Canciones</h3>
+            <span class="player-icon material-icons material-icons-outlined list-close"> close </span>
+
+          </section>
+          <section class="list-container">
+            <article>
+            </article>
+        </section>
+
+        </section>
+
+      </section>
+
+    </main>
+
+    <footer>
+      <p>Diseñado por: Juan Pablo Castillo</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
