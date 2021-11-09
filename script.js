@@ -295,5 +295,9 @@ document.addEventListener("keydown", (e) => {
 
   if (e.key == "P" && audio.src !== "") return changeAudio(false);
 
-  if (e.key == "Space" && audio.src !== "") return playPause();
+  if (e.key == " " && audio.src !== "") return playPause();
+  if (e.key == "m" && audio.src !== "") {
+    if(audio.muted) audio.muted = false;
+    else audio.muted = true;
+  }
 });
