@@ -81,28 +81,28 @@ function addSongs(listSongs) {
   let fragment = document.createDocumentFragment();
 
   general:
-  for (let el of listSongs) {
-    let article = document.createElement("article");
-    let songName = document.createElement("p");
-    let size = document.createElement("p");
+    for (let el of listSongs) {
+      let article = document.createElement("article");
+      let songName = document.createElement("p");
+      let size = document.createElement("p");
 
-    article.appendChild(songName);
-    article.appendChild(size);
+      article.appendChild(songName);
+      article.appendChild(size);
 
-    let melodyObject = new Melody(el, article);
+      let melodyObject = new Melody(el, article);
 
-    // valida que no se repitan
-    for (let elListaAudios of listaAudios) {
-      if (elListaAudios.key === melodyObject.key) continue general;
+      // valida que no se repitan
+      for (let elListaAudios of listaAudios) {
+        if (elListaAudios.key === melodyObject.key) continue general;
+      }
+
+      fragment.appendChild(melodyObject.getNodo);
+      listaAudios.push(melodyObject);
     }
-
-    fragment.appendChild(melodyObject.getNodo);
-    listaAudios.push(melodyObject);
-  }
   list.lastElementChild.appendChild(fragment);
   settingAudio(listaAudios[0].nodo);
   inputFile.value = '';
-  
+
 }
 
 // configura la cancion seleccionada para reproducirla
@@ -119,8 +119,13 @@ function settingAudio(nodo) {
     audio.src = "";
   }
   let key = null;
-  if (nodo.matches(".list-song")) key = nodo.dataset.key;
-  else key = nodo.parentElement.dataset.key;
+  if (nodo.matches(".list-song")) {
+    key = nodo.dataset.key;
+    nodo.classList.add('list-song-activate');
+  } else {
+    key = nodo.parentElement.dataset.key;
+    nodo.parentElement.classList.add('list-song-activate');
+  }
 
   let objectSong = listaAudios.filter(
     (audioInLista) => audioInLista.key === key
@@ -128,7 +133,6 @@ function settingAudio(nodo) {
 
   //definiendo audio actual
   audio.src = objectSong.getLocalUrl;
-  nodo.classList.add('list-song-activate');
 
 
   songName.textContent = objectSong.name;
@@ -251,35 +255,50 @@ document.addEventListener("change", (e) => {
 });
 
 document.addEventListener("keydown", (e) => {
-  if (e.key == "ArrowUp" && audio.src !== "") {
-    if (audio.volume + 0.05 > 1) audio.volume = 1;
-    else audio.volume = audio.volume + 0.05;
-    volume.value = audio.volume * 20;
+
+  if (audio.src !== "") return false;
+
+  switch (e.key) {
+    case "ArrowUp":
+      if (audio.volume + 0.05 > 1) audio.volume = 1;
+      else audio.volume = audio.volume + 0.05;
+      volume.value = audio.volume * 20;
+      break;
+
+    case "ArrowDown":
+      if (audio.volume - 0.05 < 0) audio.volume = 0;
+      else audio.volume = audio.volume - 0.05;
+      volume.value = audio.volume * 20;
+      break;
+
+    case "ArrowLeft":
+      if (!audio.currentTime - 5 < 0) audio.currentTime = audio.currentTime - 5;
+      break;
+
+    case "ArrowRight":
+      if (!(audio.currentTime + 5 > audio.duration))
+        audio.currentTime = audio.currentTime + 5;
+
+    case "N":
+      return changeAudio();
+      break;
+
+    case "P":
+      return changeAudio(false);
+      break;
+
+    case " ":
+      return playPause();
+      break;
+
   }
 
-  if (e.key == "ArrowDown" && audio.src !== "") {
-    if (audio.volume - 0.05 < 0) audio.volume = 0;
-    else audio.volume = audio.volume - 0.05;
-    volume.value = audio.volume * 20;
-  }
 
-  if (e.key == "ArrowLeft" && audio.src !== "") {
-    if (!audio.currentTime - 5 < 0) audio.currentTime = audio.currentTime - 5;
-  }
-
-  if (e.key == "ArrowRight" && audio.src !== "") {
-    if (!(audio.currentTime + 5 > audio.duration))
-      audio.currentTime = audio.currentTime + 5;
-  }
-
-  if (e.key == "N" && audio.src !== "") return changeAudio();
-
-  if (e.key == "P" && audio.src !== "") return changeAudio(false);
-
-  if (e.key == "Space" && audio.src !== "") return playPause();
 });
 
 //añadiendo eventos a audio
 audio.addEventListener("play", playAudio);
 audio.addEventListener("pause", pauseAudio);
 audio.addEventListener("ended", endAudio);
+
+
