@@ -39,10 +39,14 @@ const reproductor = document.querySelector(".player"),
   playIcon = document.getElementById("icon-play"),
   pauseIcon = document.getElementById("icon-pause"),
   songName = reproductor.querySelector(".song-name"),
-  volume = reproductor.querySelector(".volume-input");
+  volume = reproductor.querySelector(".volume-input"),
+  inputFile = document.getElementById('file');
 
 let listaAudios = [];
 let audio = new Audio();
+
+
+
 let intervalo = null;
 
 // **************** Funciones ****************************
@@ -75,12 +79,12 @@ function createModal() {
 //añade canciones a la lista
 function addSongs(listSongs) {
   let fragment = document.createDocumentFragment();
-  general: for (let el of listSongs) {
-    if (!el.type.includes("audio")) continue;
 
+  general:
+  for (let el of listSongs) {
     let article = document.createElement("article");
     let songName = document.createElement("p");
-    let size = document.createElement("size");
+    let size = document.createElement("p");
 
     article.appendChild(songName);
     article.appendChild(size);
@@ -97,6 +101,8 @@ function addSongs(listSongs) {
   }
   list.lastElementChild.appendChild(fragment);
   settingAudio(listaAudios[0].nodo);
+  inputFile.value = '';
+  
 }
 
 // configura la cancion seleccionada para reproducirla
@@ -104,6 +110,9 @@ function settingAudio(nodo) {
   // configurar icono play
   if (playIcon.classList.contains("hide")) playIcon.classList.remove("hide");
   if (!pauseIcon.classList.contains("hide")) pauseIcon.classList.add("hide");
+
+  //quita la clase de activa a las canciones actuales
+  Array.from(document.querySelectorAll('.list-song-activate')).map(song => song.classList.remove('list-song-activate'));
 
   if (audio.src !== "") {
     audio.pause();
@@ -119,11 +128,8 @@ function settingAudio(nodo) {
 
   //definiendo audio actual
   audio.src = objectSong.getLocalUrl;
+  nodo.classList.add('list-song-activate');
 
-  //añadiendo eventos
-  audio.addEventListener("play", playAudio);
-  audio.addEventListener("pause", pauseAudio);
-  audio.addEventListener("ended", endAudio);
 
   songName.textContent = objectSong.name;
   songName.title = objectSong.name;
@@ -181,28 +187,6 @@ function changeAudio(next = true) {
   return settingAudio(objetoSolicitado.nodo);
 }
 
-//crea form para cargar musica
-function createFormSong() {
-  let modal = createModal();
-  let input = document.createElement("input");
-  let contenedor = document.createElement("article");
-  let label = document.createElement("label");
-
-  label.classList.add("ventana-form-label");
-  input.classList.add("ventana-form-input");
-  input.type = "file";
-  input.id = "file-audio";
-  input.accept = "audio/*";
-  input.multiple = true;
-  label.for = input.id;
-  label.textContent = "Selecciona tus canciones";
-  contenedor.classList.add("ventana-form");
-
-  contenedor.appendChild(label);
-  contenedor.appendChild(input);
-  modal.appendChild(contenedor);
-  return document.body.appendChild(modal);
-}
 // ********************* Eventos *************************************
 
 audioBar.addEventListener("change", (e) => {
@@ -214,11 +198,9 @@ audioBar.addEventListener("change", (e) => {
 document.addEventListener("click", (e) => {
   //cierra modal
   if (e.target.matches(".modal-close")) {
+    e.stopPropagation();
     return e.target.parentElement.remove();
   }
-
-  if (e.target === loadMusic || e.target.parentElement === loadMusic)
-    return createFormSong();
 
   //cierra lista
   if (
@@ -259,9 +241,8 @@ document.addEventListener("click", (e) => {
 });
 
 document.addEventListener("change", (e) => {
-  if (e.target.matches(".ventana-form-input")) {
-    addSongs(e.target.files);
-    document.querySelector(".modal").remove();
+  if (e.target === inputFile) {
+    addSongs(inputFile.files);
   }
 
   if (e.target === volume || audio.src !== "") {
@@ -295,9 +276,10 @@ document.addEventListener("keydown", (e) => {
 
   if (e.key == "P" && audio.src !== "") return changeAudio(false);
 
-  if (e.key == " " && audio.src !== "") return playPause();
-  if (e.key == "m" && audio.src !== "") {
-    if(audio.muted) audio.muted = false;
-    else audio.muted = true;
-  }
+  if (e.key == "Space" && audio.src !== "") return playPause();
 });
+
+//añadiendo eventos a audio
+audio.addEventListener("play", playAudio);
+audio.addEventListener("pause", pauseAudio);
+audio.addEventListener("ended", endAudio);
