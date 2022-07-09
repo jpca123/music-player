@@ -66,15 +66,6 @@ function playPause() {
   }
 }
 
-function createModal() {
-  let modal = document.createElement("div");
-  modal.classList.add("modal");
-  let close = document.createElement("span");
-  close.classList.add("material-icons", "modal-close");
-  close.textContent = "close";
-  modal.appendChild(close);
-  return modal;
-}
 
 //añade canciones a la lista
 function addSongs(listSongs) {
@@ -197,7 +188,6 @@ audioBar.addEventListener("change", (e) => {
   if (audio.src !== "") audio.currentTime = e.target.value;
 });
 
-// **************************** Eventos DOM ******************************
 
 document.addEventListener("click", (e) => {
   //cierra modal
@@ -211,27 +201,27 @@ document.addEventListener("click", (e) => {
     e.target === listBtn ||
     e.target.parentElement == listBtn ||
     e.target.matches(".list-close")
-  ) {
-    return list.classList.toggle("list-active");
-  }
+  ) return list.classList.toggle("list-active");
 
   //pausa despausa
   if ((e.target === play || e.target.parentElement == play) && audio)
     return playPause();
-
+  
+    // Asignarnar Cancion
   if (
     e.target.matches(".list-song") ||
     e.target.parentElement.matches(".list-song")
   )
     return settingAudio(e.target);
-
+  
+    // Devolver Cancion
   if (e.target === skipBack || e.target.parentElement === skipBack) {
     if (audio.src === "") return false;
     if (audio.currentTime + 10 >= audio.duration)
       return (audio.currentTime = audio.duration);
     return (audio.currentTime = audio.currentTime - 10);
   }
-
+  // adelantar cancion
   if (e.target === skipNext || e.target.parentElement === skipNext) {
     if (audio.src === "") return false;
     audio.currentTime = audio.currentTime + 10;
@@ -255,8 +245,8 @@ document.addEventListener("change", (e) => {
 });
 
 document.addEventListener("keydown", (e) => {
-
-  if (audio.src !== "") return false;
+  console.log(e.key)
+  if (audio.src === "") return false;
 
   switch (e.key) {
     case "ArrowUp":
@@ -276,8 +266,8 @@ document.addEventListener("keydown", (e) => {
       break;
 
     case "ArrowRight":
-      if (!(audio.currentTime + 5 > audio.duration))
-        audio.currentTime = audio.currentTime + 5;
+      return audio.currentTime = audio.currentTime + 10;
+
 
     case "N":
       return changeAudio();
@@ -290,7 +280,19 @@ document.addEventListener("keydown", (e) => {
     case " ":
       return playPause();
       break;
+    case "m":
+      if (audio.muted) audio.muted = false;
+      else audio.muted = true;
+      break;
+    case ">":
+      if(audio.playbackRate < 3) audio.playbackRate = audio.playbackRate + 0.25;
+      document.getElementById("control-velocidad").textContent = `${audio.playbackRate}x`;
+      break;
 
+    case "<":
+      if(audio.playbackRate > 0.25) audio.playbackRate = audio.playbackRate - 0.25;
+      document.getElementById("control-velocidad").textContent = `${audio.playbackRate}x`;
+      break;
   }
 
 

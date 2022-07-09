@@ -385,6 +385,13 @@
       font-size: 1.7em;
       color: var(--primary-color);
     }
+    .volume-speed{
+      display: block;
+      text-align: center;
+      min-width: 5em;
+      padding: .5em;
+      font-size: .8em;
+    }
 
   /* Lista de canciones */
     .list {
